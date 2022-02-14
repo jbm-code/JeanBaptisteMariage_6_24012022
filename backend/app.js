@@ -1,8 +1,8 @@
 
 console.log("lancement de app.js")
-// express = framework basé sur node.js
+// express = framework basé sur node.js, permet de déployer les API rapidement
 const express = require('express');
-// mongoose = connection a mongoDB
+// mongoose = connection a mongoDB, base de données NoSQL
 const mongoose = require('mongoose');
 // bodyParser = extrait l'objet JSON des requêtes post
 const bodyParser = require('body-parser');
@@ -15,15 +15,13 @@ const userRoutes = require('./routes/user')
 
 const app = express();
 
-mongoose.connect('mongodb+srv://jbm:FaitChier@cluster0.exfhg.mongodb.net/hot-takes?retryWrites=true&w=majority',
+mongoose.connect('mongodb+srv://jbm:NouveauCode@cluster0.exfhg.mongodb.net/hot-takes?retryWrites=true&w=majority',
   { useNewUrlParser: true, useUnifiedTopology: true })
    .then(() => console.log('Connexion à MongoDB réussie !'))
    .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-//Headers qui permettent d'accéder a l'API
-//Pour permettre des requêtes cross-origin (et empêcher des erreurs CORS), 
-//des headers spécifiques de contrôle d'accès doivent être précisés 
-//pour tous vos objets de réponse.
+// CORS <<Cross Origin Resource Sharing>>, systeme de sécrutité qui, par défaut, 
+// bloque les appels HTTP entre des serveurs différents.
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
