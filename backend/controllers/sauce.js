@@ -1,6 +1,7 @@
 const sauceModel = require('../models/sauceModel.js');
 //permet d'accéder au systeme de fichiers (supp des images)
 const fs =require('fs');
+const { log } = require('console');
 
 exports.createThing = (req, res, next) => {
     //on transforme la chaine de caractères en objet
@@ -17,7 +18,6 @@ exports.createThing = (req, res, next) => {
     });
     newSauce.save()  //le methode save() renvoie une promesse
       .then(() => res.status(201).json({message: 'Objet enregistré !'}))
-      .then(console.log("objet bien enregistré"))
       .catch(error => res.status(400).json({ error }));
   }
 exports.modifyThing = (req, res, next) => {
@@ -60,6 +60,9 @@ exports.deleteThing =  (req, res, next) => {
     }   
         
 exports.getOneThing = (req, res, next) => {
+
+  console.log("req.body =", req)
+
     sauceModel.findOne({ _id: req.params.id })
         .then(objetSelectionné => res.status(200).json(objetSelectionné))
         .catch(error => res.status(404).json({ error}));
@@ -71,6 +74,11 @@ exports.getAllThing =(req, res, next) => {
 }
 
 exports.likeThing = (req, res, next) => {
+
+    console.log("req.params =", req.params)
+    console.log("req.body =", req.body)
+    console.log(req)
+
     if (req.body.like === 0) {
           sauceModel.findOne({ _id: req.params.id })
             .then((sauce) => {
