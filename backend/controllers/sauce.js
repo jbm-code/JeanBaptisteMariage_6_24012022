@@ -45,8 +45,8 @@ exports.deleteThing =  (req, res, next) => {
                                 error: new Error('No such Thing !')
                             });
                         }
-                        if (thing.userId !== req.auth.userId) {
-                            res.status(400).json({
+                        if (thing.userId !== req.auth.userId) {  
+                            res.status(400).json({   /// avec postman, le mauvais ID est reconnu, message d'erreur, mais le produit est tout de même supprimé.
                                 error : new Error('Unauthorized request !')
                             });
                         }
@@ -61,8 +61,6 @@ exports.deleteThing =  (req, res, next) => {
         
 exports.getOneThing = (req, res, next) => {
 
-  console.log("req.body =", req)
-
     sauceModel.findOne({ _id: req.params.id })
         .then(objetSelectionné => res.status(200).json(objetSelectionné))
         .catch(error => res.status(404).json({ error}));
@@ -75,12 +73,13 @@ exports.getAllThing =(req, res, next) => {
 
 exports.likeThing = (req, res, next) => {
 
-    console.log("req.params =", req.params)
-    console.log("req.body =", req.body)
-    console.log(req)
+    console.log("req.params =", req.name)
+    //console.log("req.body =", req.body)
+   
 
     if (req.body.like === 0) {
           sauceModel.findOne({ _id: req.params.id })
+          //console.log("req.params.id =", _id)
             .then((sauce) => {
               if (sauce.usersLiked.find(user => user === req.body.userId)) {
                 sauceModel.updateOne({ _id: req.params.id }, {
