@@ -42,13 +42,14 @@ const errorHandler = error => {
 
 // fonction qui sera exécutée a chaque appel effectué vers ce serveur
 // https necessite un certificat ssl, a obtenir avec un nom de domaine
-const server = http.createServer(app);
+const server = http.createServer(app)
 
 server.on('error', errorHandler);
 server.on('listening', () => {
   const address = server.address();
   const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
-  console.log('Listening on ' + bind);
+  console.log('Prêt à écouter les requètes au port ' + bind);
 });
 
 server.listen(port);
+

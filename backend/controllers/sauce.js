@@ -4,10 +4,12 @@ const fs =require('fs');
 const { log } = require('console');
 
 exports.createThing = (req, res, next) => {
-    //on transforme la chaine de caractères en objet
+    //on transforme la chaine de caractères en objet json
+    console.log("req.body =", req.body);
     const sauceObject = JSON.parse(req.body.sauce);
     //on supprime l'id créé automatiquement par MongoDB
     delete sauceObject._id;
+    console.log("req.file =", req.file)
     const newSauce = new sauceModel({
       ...sauceObject, //détaille tous les champs de la requête
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
@@ -35,28 +37,18 @@ exports.modifyThing = (req, res, next) => {
 exports.deleteThing =  (req, res, next) => {
     sauceModel.findOne({ _id:req.params.id })
         .then(thing => {
-            const filename = thing.imageUrl.split('/images')[1]; // [1] seconde partie du split
+          if (thing.userId !== req.auth.userId) {  
+            res.status(400).json({ message: 'Votre authentification ne vous autorise pas cette action !'})
+          }
+          else if (thing.userId === req.auth.userId) {  
+          const filename = thing.imageUrl.split('/images')[1]; // [1] seconde partie du split
             //appel fonction du package fs : unlink pour supprimer
-            fs.unlink (`images/${filename}`, () => {
-                sauceModel.findOne({ _id: req.params.id })
-                    .then((thing) => {
-                        if (!thing) {
-                            res.status(404).json({
-                                error: new Error('No such Thing !')
-                            });
-                        }
-                        if (thing.userId !== req.auth.userId) {  
-                            res.status(400).json({   /// avec postman, le mauvais ID est reconnu, message d'erreur, mais le produit est tout de même supprimé.
-                                error : new Error('Unauthorized request !')
-                            });
-                        }
-                        sauceModel.deleteOne({ _id: req.params.id })
-                            .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
-                            .catch(error => res.status(400).json({ error }));
-                    })  
-                }    
-            )
-        })
+            fs.unlink (`images/${filename}`, () => {            
+            sauceModel.deleteOne({ _id: req.params.id })
+                .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
+                .catch(error => res.status(400).json({ error }));        
+            })                                
+          }})
     }   
         
 exports.getOneThing = (req, res, next) => {
