@@ -1,7 +1,6 @@
 const sauceModel = require('../models/sauceModel.js');
 //permet d'accéder au systeme de fichiers (supp des images)
 const fs =require('fs');
-const { log } = require('console');
 
 exports.createThing = (req, res, next) => {
     //on transforme la chaine de caractères en objet json
@@ -36,23 +35,24 @@ exports.modifyThing = (req, res, next) => {
   }
 exports.deleteThing =  (req, res, next) => {
     sauceModel.findOne({ _id:req.params.id })
-        .then((thing) => {
-          if (thing.userId !== req.auth.userId) {  
-            res.status(400).json({ message: 'Votre authentification ne vous autorise pas cette action !'})
-          }
-          else  { 
-            const filename = thing.imageUrl.split('/images')[1]; // [1] seconde partie du split
-              //appel fonction du package fs : unlink pour supprimer
-              fs.unlink (`images/${filename}`, () => {            
-                sauceModel.deleteOne({ _id: req.params.id })
-                    .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
-                    .then (console.log("objet supprimé"))
-                    .catch(error => res.status(400).json({ error }))       
-              })    
-          }         
-        })                                
-        .catch(error => res.status(500).json({ error }))
-}                                        
+        .then(console.log("req.userAuth =", req.userAuth))
+        .then(thing => {
+         if (thing.userId !== req.userAuth.userId) {  
+          res.status(400).json({ message: 'Votre authentification ne vous autorise pas cette action !'})
+        }
+          else if (thing.userId === req.userAuth.userId) {  
+          const filename = thing.imageUrl.split('/images')[1]; // [1] seconde partie du split
+            //appel fonction du package fs : unlink pour supprimer
+            fs.unlink (`images/${filename}`, () => {            
+            sauceModel.deleteOne({ _id: req.params.id })
+                .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
+                .then (console.log("objet supprimé"))
+                .catch(error => res.status(400).json({ error }));        
+            })                                
+        }})
+        .catch(error => res.status(400).json({ message: 'ne marche pas !'}));
+    }   
+        
 exports.getOneThing = (req, res, next) => {
 
     sauceModel.findOne({ _id: req.params.id })
