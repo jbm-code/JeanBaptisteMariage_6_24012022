@@ -9,7 +9,6 @@ const bodyParser = require('body-parser')
 // path = plugin pour charger des images
 const path = require('path')
 //helmet protege contre les vunlérabilités courantes (OWASP)
-//cors
 const helmet = require('helmet')
 const cors = require('cors')
 

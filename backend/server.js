@@ -1,5 +1,5 @@
 console.log("hello world");
-// on importe le package http natif de Node
+// le module http fournit méthodes et classes
 const http = require('http');
 //on importe notre propre fichier, app.js
 const app = require('./app');
