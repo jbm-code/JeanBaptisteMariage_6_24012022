@@ -11,15 +11,17 @@ module.exports = (req, res, next) => {
     // finalement on récupère le userID
     const userId = decodedToken.userId;
     //ajout d'authentification a l'objet de requête qui contient le userId extrait du token
-    req.auth = { userId };
+    //req.auth = { userId };
+    console.log("user connecté =", userId);
+    console.log("user autorisé =", req.body.userId)
     if (req.body.userId && req.body.userId !== userId) {
-      throw 'Invalid user ID';
+      throw 'User ID incorrect';
     } else {
       next();
     }
   } catch {
     res.status(401).json({
-      error: new Error('Invalid request!')
+      error: new Error('Requête non authentifiée!')
     });
   }
 };

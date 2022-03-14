@@ -5,13 +5,13 @@ const { log } = require('console');
 
 exports.createThing = (req, res, next) => {
     //on transforme la chaine de caractères en objet json
-    console.log("req.body =", req.body);
     const sauceObject = JSON.parse(req.body.sauce);
     //on supprime l'id créé automatiquement par MongoDB
     delete sauceObject._id;
-    console.log("req.file =", req.file)
+
     const newSauce = new sauceModel({
       ...sauceObject, //détaille tous les champs de la requête
+      //on recupere de maniere dynamique l'url defini par multer
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
       likes: 0,
       dislikes: 0,
@@ -46,6 +46,7 @@ exports.deleteThing =  (req, res, next) => {
             fs.unlink (`images/${filename}`, () => {            
             sauceModel.deleteOne({ _id: req.params.id })
                 .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
+                .then (console.log("objet supprimé"))
                 .catch(error => res.status(400).json({ error }));        
             })                                
           }})
