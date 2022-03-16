@@ -22,20 +22,28 @@ exports.createThing = (req, res, next) => {
       .catch(error => res.status(400).json({ error }));
   }
 exports.modifyThing = (req, res, next) => {
-    const sauceObject = req.file ? //le fichier image existe-t-il ?
-        // si oui
-        {   ...JSON.parse(req.body.sauce),
-            imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-        // sinon    
-        } : {  ...req.body };
-    sauceModel.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
-      .then(() => res.status(200).json({ message: 'Objet modifié !'}))
-      .then (console.log("objet modifié"))
-      .catch(error => res.status(400).json({ error }));
-  }
+  sauceModel.findOne({ _id:req.params.id })
+        .then(thing => {
+         if (thing.userId !== req.userAuth.userId) {  
+          res.status(400).json({ message: 'Votre authentification ne vous autorise pas cette action !'})
+        }
+          else if (thing.userId === req.userAuth.userId) {
+            const sauceObject = req.file ? //le fichier image existe-t-il ?
+                // si oui
+                {   ...JSON.parse(req.body.sauce),
+                    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+                // sinon    
+                } : {  ...req.body };
+            sauceModel.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+              .then(() => res.status(200).json({ message: 'Objet modifié !'}))
+              .then (console.log("objet modifié"))
+              .catch(error => res.status(400).json({ error }));
+            }})
+            .catch(error => res.status(400).json({ message: 'ne marche pas !'}));     
+                
+}
 exports.deleteThing =  (req, res, next) => {
     sauceModel.findOne({ _id:req.params.id })
-        .then(console.log("req.userAuth =", req.userAuth))
         .then(thing => {
          if (thing.userId !== req.userAuth.userId) {  
           res.status(400).json({ message: 'Votre authentification ne vous autorise pas cette action !'})
@@ -51,14 +59,14 @@ exports.deleteThing =  (req, res, next) => {
             })                                
         }})
         .catch(error => res.status(400).json({ message: 'ne marche pas !'}));
-    }   
+}   
         
 exports.getOneThing = (req, res, next) => {
 
     sauceModel.findOne({ _id: req.params.id })
         .then(objetSelectionné => res.status(200).json(objetSelectionné))
         .catch(error => res.status(404).json({ error}));
-    }
+}
 exports.getAllThing =(req, res, next) => {
     sauceModel.find()
     .then(objetsExistants => res.status(200).json(objetsExistants))
@@ -66,10 +74,6 @@ exports.getAllThing =(req, res, next) => {
 }
 
 exports.likeThing = (req, res, next) => {
-
-    console.log("req.params =", req.name)
-    //console.log("req.body =", req.body)
-   
 
     if (req.body.like === 0) {
           sauceModel.findOne({ _id: req.params.id })
