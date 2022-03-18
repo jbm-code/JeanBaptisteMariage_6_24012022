@@ -3,6 +3,8 @@ console.log("hello world");
 const http = require('http');
 //on importe notre propre fichier, app.js
 const app = require('./app');
+const dotenv = require("dotenv");
+dotenv.config();
 
 // normalizePort configure le port de connection
 const normalizePort = val => {

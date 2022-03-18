@@ -1,5 +1,12 @@
 
 console.log("lancement de app.js")
+const dotenv = require("dotenv");
+dotenv.config();
+console.log("jwt =", process.env.jwt_key);
+console.log("userName =", process.env.db_userName);
+console.log("userPass =", process.env.db_userPass);
+console.log("clusterName =", process.env.db_clusterName);
+console.log("DataBase =", process.env.db_name);
 // express = framework basé sur node.js, permet de déployer les API rapidement
 const express = require('express')
 // mongoose = connection a mongoDB, base de données NoSQL
@@ -20,7 +27,8 @@ const app = express()
 app.use(helmet())
 app.use(cors())
 
-mongoose.connect('mongodb+srv://jbm:NouveauCode@cluster0.exfhg.mongodb.net/hot-takes?retryWrites=true&w=majority',
+//jbm:NouveauCode@cluster0.exfhg.mongodb.net/hot-takes//aEffacer///
+mongoose.connect('mongodb+srv://${process.env.db_userName}:${process.env.db_userPass}@${process.env.db_clusterName}.mongodb.net/${process.env.db_name}?retryWrites=true&w=majority',
   { useNewUrlParser: true, useUnifiedTopology: true })
    .then(() => console.log('Connexion à MongoDB réussie !'))
    .catch(() => console.log('Connexion à MongoDB échouée !'))

@@ -62,7 +62,6 @@ exports.deleteThing =  (req, res, next) => {
 }   
         
 exports.getOneThing = (req, res, next) => {
-
     sauceModel.findOne({ _id: req.params.id })
         .then(objetSelectionné => res.status(200).json(objetSelectionné))
         .catch(error => res.status(404).json({ error}));
