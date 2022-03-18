@@ -28,7 +28,7 @@ app.use(helmet())
 app.use(cors())
 
 //jbm:NouveauCode@cluster0.exfhg.mongodb.net/hot-takes//aEffacer///
-mongoose.connect('mongodb+srv://${process.env.db_userName}:${process.env.db_userPass}@${process.env.db_clusterName}.mongodb.net/${process.env.db_name}?retryWrites=true&w=majority',
+mongoose.connect(`mongodb+srv://${process.env.db_userName}:${process.env.db_userPass}@${process.env.db_clusterName}.mongodb.net/${process.env.db_name}?retryWrites=true&w=majority`,
   { useNewUrlParser: true, useUnifiedTopology: true })
    .then(() => console.log('Connexion à MongoDB réussie !'))
    .catch(() => console.log('Connexion à MongoDB échouée !'))

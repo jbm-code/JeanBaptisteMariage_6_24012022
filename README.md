@@ -8,7 +8,7 @@ Node, Express, MongoDB (base des données)
 Variables d'environnement
 Avant de lancer ce projet, vous devrez ajouter les variables d'environnement suivantes dans un fichier .env
 
-jwt_key=
+jwt_key=<br>
 db_userName=
 db_userPass=
 db_clusterName=
