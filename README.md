@@ -15,6 +15,8 @@ db_userPass=<br>
 db_clusterName=<br>
 db_name=<br>
 
+Les images seront stockées dans un dossier backend/images.<br>
+
 Installation du backend<br>
 Installer les dépendances<br>
 npm install<br>
